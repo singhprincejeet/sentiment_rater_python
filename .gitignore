@@ -1,3 +1,5 @@
+###Data files###
+data_processing/data/*
 
 # Created by https://www.gitignore.io/api/django,intellij+all
 
