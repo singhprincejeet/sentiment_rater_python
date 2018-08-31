@@ -1,6 +1,7 @@
 from django.http import JsonResponse, HttpResponse
 from nltk import word_tokenize
 from nltk.stem import SnowballStemmer
+from nltk.corpus import stopwords
 
 from api.models import Tweet
 from api.models import Word
@@ -11,8 +12,9 @@ from api.serializers import TweetSerializer
 def search(request, query):
 
     try:
-        tokens = word_tokenize(query)
         snowball_stemmer = SnowballStemmer("english")
+        tokens = word_tokenize(query)
+        tokens = [token for token in tokens if token not in stopwords.words('english')]
         words = []
         tweets = []
         for token in tokens:
