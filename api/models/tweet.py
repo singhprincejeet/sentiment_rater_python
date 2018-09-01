@@ -1,6 +1,6 @@
 from django.db import models
 
-from .sentiment import Sentiment
+from api.models.sentiment import Sentiment
 
 
 class Tweet(models.Model):

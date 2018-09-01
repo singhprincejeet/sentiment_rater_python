@@ -1,6 +1,6 @@
 from django.db import models
 
-from .tweet import Tweet
+from api.models.tweet import Tweet
 
 
 class Word(models.Model):
