@@ -1,31 +1,33 @@
-import pandas
-
 from django.db import migrations
-from api.models import Tweet
+from api.models import Tweet, Sentiment
 
 
 def populate_tweets(_, __):
-    cols = ['sentiment','id','date','query_string','user','content']
-    dataframe = pandas.read_csv('./data_processing/data/training_data.16000.csv',header=None, names=cols, encoding = "ISO-8859-1", low_memory=False)
-
-    # removes unnecessary columns
-    dataframe.drop(['content','date','query_string','user'],axis=1, inplace=True)
 
     tweets = Tweet.objects.all()
 
     for tweet in tweets:
-        tweet.sentiment_id=dataframe.loc[dataframe['id'] == tweet.id, 'sentiment']
-        tweet.save()
+        # negative tweets after this id
+        if tweet.id > 1467822272:
+            tweet.sentiment=Sentiment.objects.get(id=4)
+            tweet.save()
+        else:
+            tweet.sentiment=Sentiment.objects.get(id=0)
+            tweet.save()
 
 
 def delete_tweets(_, __):
-    Tweet.objects.all().delete()
+    tweets = Tweet.objects.all()
+
+    for tweet in tweets:
+        tweet.sentiment=Sentiment.objects.get(id=0)
+        tweet.save()
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("api", "0002_tweet_sentiment")
+        ("api", "0001_populate_sentiments")
     ]
     operations = [
         migrations.RunPython(populate_tweets, delete_tweets),

@@ -2,10 +2,10 @@ import pandas
 
 from django.db import migrations
 
-from api.models import Tweet
+from api.models import Tweet, Sentiment
 
 
-def populate_users(_, __):
+def populate_tweets_with_sentiments(_, __):
     cols = ['sentiment', 'id', 'date', 'query_string', 'user', 'content']
     dataframe = pandas.read_csv('./data_processing/data/training_data.16000.csv',header=None, names=cols, encoding = "ISO-8859-1", low_memory=False)
 
@@ -18,11 +18,22 @@ def populate_users(_, __):
         tweet.save()
 
 
+def undo_populate_tweets_with_sentiments(_, __):
+    tweets = Tweet.objects.all()
+
+    for tweet in tweets:
+        tweet.sentiment_id = -1
+        tweet.save()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("api", "0011_populate_users_tweets")
+        ("api", "0009_add_word_frequency")
     ]
     operations = [
-        migrations.RunPython(populate_users),
+        migrations.RunPython(
+            populate_tweets_with_sentiments,
+            undo_populate_tweets_with_sentiments
+        ),
     ]

@@ -25,11 +25,19 @@ def populate_words_tweets(_, __):
         i += 1
 
 
+def undo_populate_words_tweets(_, __):
+
+    words = Word.objects.all()
+
+    for word in words.all():
+        word.tweets.clear()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("api", "0007_auto_20180821_0843")
+        ("api", "0006_lowercase_words")
     ]
     operations = [
-        migrations.RunPython(populate_words_tweets),
+        migrations.RunPython(populate_words_tweets, undo_populate_words_tweets),
     ]

@@ -7,7 +7,6 @@ from api.models import Word
 
 
 def populate_words_tweets(_, __):
-
     tweets = Tweet.objects.all()
 
     for tweet in tweets.all():
@@ -17,11 +16,18 @@ def populate_words_tweets(_, __):
             word.tweets.add(tweet)
 
 
+def undo_populate_words_tweets(_, __):
+    words = Word.objects.all()
+
+    for word in words.all():
+        word.tweets.clear()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
         ("api", "0005_populate_words")
     ]
     operations = [
-        migrations.RunPython(populate_words_tweets),
+        migrations.RunPython(populate_words_tweets, undo_populate_words_tweets),
     ]

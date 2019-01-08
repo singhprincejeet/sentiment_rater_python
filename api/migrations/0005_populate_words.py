@@ -1,4 +1,3 @@
-import pandas
 from nltk import word_tokenize
 from django.db import migrations
 
@@ -19,8 +18,8 @@ def populate_words(_, __):
 
     for token in all_tokens:
         word = Word(
-            word=token
-            )
+            word=token,
+        )
         word.save()
 
 
@@ -31,7 +30,7 @@ def delete_words(_, __):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("api", "0005_word")
+        ("api", "0002_populate_tweets_with_sentiments")
     ]
     operations = [
         migrations.RunPython(populate_words, delete_words),

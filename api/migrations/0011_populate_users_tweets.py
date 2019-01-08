@@ -34,7 +34,7 @@ def delete_users(_, __):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("api", "0011_auto_20180901_1856")
+        ("api", "0011_correct_tweets_sentiments")
     ]
     operations = [
         migrations.RunPython(populate_users, delete_users),

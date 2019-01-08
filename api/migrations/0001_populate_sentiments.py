@@ -15,8 +15,6 @@ def populate_sentiments(_, __):
     negative.save()
 
 
-
-
 def delete_sentiments(_, __):
     Sentiment.objects.all().delete()
 
@@ -24,7 +22,7 @@ def delete_sentiments(_, __):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("api", "0002_sentiment")
+        ("api", "0001_populate_tweets")
     ]
     operations = [
         migrations.RunPython(populate_sentiments, delete_sentiments),

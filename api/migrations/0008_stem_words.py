@@ -7,28 +7,20 @@ from api.models import Word
 
 
 def stem_words(_, __):
-    Word.objects.all().delete()
-
-    tweets = Tweet.objects.all()
-    all_words = []
-
     snowball_stemmer = SnowballStemmer("english")
 
-    for tweet in tweets:
-        tokens_from_tweet = word_tokenize(str(tweet.content).lower())
-        for token in tokens_from_tweet:
-            token = snowball_stemmer.stem(token)
-            if token not in all_words:
-                all_words.append(token)
-
-    for token in all_words:
-        word = Word(
-            word=token
-        )
-        word.save()
+    for word in Word.objects.all():
+        stemmed = snowball_stemmer.stem(word.word)
+        if Word.objects.filter(word=stemmed).count() > 0:
+            word.delete()
+        else:
+            word.word = stemmed
+            word.save()
 
 
 def undo_stem_words(_, __):
+    Word.objects.all().delete()
+
     tweets = Tweet.objects.all()
     all_tokens = []
 
@@ -40,9 +32,11 @@ def undo_stem_words(_, __):
 
     for token in all_tokens:
         word = Word(
-            word=token
+            word=token,
+            frequency=-1,
         )
-        word.save()
+        if Word.objects.filter(word=token).count() is 0:
+            word.save()
 
 
 class Migration(migrations.Migration):

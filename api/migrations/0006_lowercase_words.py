@@ -6,15 +6,18 @@ from api.models import Word
 
 
 def lowercase_words(_, __):
-
-
-
     for word in Word.objects.all():
-        word.word = str(word.word).lower()
-        word.save()
+        lowercased = str(word.word).lower()
+        if Word.objects.filter(word=lowercased).count() > 0:
+            word.delete()
+        else:
+            word.word = lowercased
+            word.save()
 
 
 def undo_lowercase_words(_, __):
+    Word.objects.all().delete()
+
     tweets = Tweet.objects.all()
     all_tokens = []
 
@@ -26,7 +29,8 @@ def undo_lowercase_words(_, __):
 
     for token in all_tokens:
         word = Word(
-            word=token
+            word=token,
+            frequency=-1
         )
         word.save()
 
@@ -34,7 +38,7 @@ def undo_lowercase_words(_, __):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("api", "0006_auto_20180820_0831")
+        ("api", "0005_populate_words_tweets")
     ]
     operations = [
         migrations.RunPython(lowercase_words, undo_lowercase_words),

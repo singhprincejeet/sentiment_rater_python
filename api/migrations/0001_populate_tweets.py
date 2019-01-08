@@ -24,7 +24,6 @@ def populate_tweets(_, __):
         tweet.save()
 
 
-
 def delete_tweets(_, __):
     Tweet.objects.all().delete()
 

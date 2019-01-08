@@ -27,6 +27,13 @@ def populate_words_tweets(_, __):
             print(str(i) + " tweets done")
         i += 1
 
+def undo_populate_words_tweets(_, __):
+
+    words = Word.objects.all()
+
+    for word in words.all():
+        word.tweets.clear()
+
 
 class Migration(migrations.Migration):
 
@@ -34,5 +41,5 @@ class Migration(migrations.Migration):
         ("api", "0008_stem_words")
     ]
     operations = [
-        migrations.RunPython(populate_words_tweets),
+        migrations.RunPython(populate_words_tweets, undo_populate_words_tweets),
     ]

@@ -43,6 +43,7 @@ def get_tweets(words):
     words.sort(key=lambda word: word.frequency, reverse=True)
     tweets_objects = [word.tweets for word in words]
     tweets_dict = {}
+    # create dict for tweets based on their reputation
     for tweets_object in tweets_objects:
         tweets = tweets_object.all()
         for tweet in tweets:
@@ -50,6 +51,7 @@ def get_tweets(words):
                 tweets_dict[tweet] += 1
             else:
                 tweets_dict[tweet] = 1
+    # then calculate the rank of tweets based on inverted document frequency
     tweets_dict = sorted(tweets_dict.items(), key=lambda x:x[1], reverse=True)
     result = [tweet[0] for tweet in tweets_dict]
     return result
